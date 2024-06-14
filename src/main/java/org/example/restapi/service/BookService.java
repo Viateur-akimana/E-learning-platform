@@ -1,61 +1,61 @@
-package org.example.restapi.service;
+    package org.example.restapi.service;
 
-import org.example.restapi.model.Book;
-import org.example.restapi.model.Library;
-import org.example.restapi.model.Publisher;
-import org.example.restapi.repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+    import org.example.restapi.model.Book;
+    import org.example.restapi.model.Library;
+    import org.example.restapi.model.Publisher;
+    import org.example.restapi.repository.BookRepository;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+    import java.util.List;
+    import java.util.Optional;
 
-@Service
-public class BookService {
+    @Service
+    public class BookService {
 
-    @Autowired
-    private BookRepository bookRepository;
+        @Autowired
+        private BookRepository bookRepository;
 
-    @Autowired
-    private PublisherService publisherService;
+        @Autowired
+        private PublisherService publisherService;
 
-    @Autowired
-    private LibraryService libraryService;
+        @Autowired
+        private LibraryService libraryService;
 
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
-    }
-
-    public Optional<Book> getBookById(Long id) {
-        return bookRepository.findById(id);
-    }
-
-    public Book saveBook(Book book) {
-        return bookRepository.save(book);
-    }
-
-    public Book saveOrUpdateBook(Book book) {
-        if (book.getPublisher() == null || book.getPublisher().getName() == null) {
-            throw new IllegalArgumentException("Publisher name cannot be null");
-        }
-        if (book.getLibrary() == null || book.getLibrary().getName() == null) {
-            throw new IllegalArgumentException("Library name cannot be null");
+        public List<Book> getAllBooks() {
+            return bookRepository.findAll();
         }
 
-        String publisherName = book.getPublisher().getName();
-        String libraryName = book.getLibrary().getName();
+        public Optional<Book> getBookById(Long id) {
+            return bookRepository.findById(id);
+        }
 
-        Publisher publisher = publisherService.getOrCreatePublisherByName(publisherName);
+        public Book saveBook(Book book) {
+            return bookRepository.save(book);
+        }
 
-        Library library = libraryService.getOrCreateLibraryByName(libraryName);
+        public Book saveOrUpdateBook(Book book) {
+            if (book.getPublisher() == null || book.getPublisher().getName() == null) {
+                throw new IllegalArgumentException("Publisher name cannot be null");
+            }
+            if (book.getLibrary() == null || book.getLibrary().getName() == null) {
+                throw new IllegalArgumentException("Library name cannot be null");
+            }
 
-        book.setPublisher(publisher);
-        book.setLibrary(library);
+            String publisherName = book.getPublisher().getName();
+            String libraryName = book.getLibrary().getName();
 
-        return bookRepository.save(book);
+            Publisher publisher = publisherService.getOrCreatePublisherByName(publisherName);
+
+            Library library = libraryService.getOrCreateLibraryByName(libraryName);
+
+            book.setPublisher(publisher);
+            book.setLibrary(library);
+
+            return bookRepository.save(book);
+        }
+
+        public void deleteBook(Long id) {
+            bookRepository.deleteById(id);
+        }
     }
-
-    public void deleteBook(Long id) {
-        bookRepository.deleteById(id);
-    }
-}
