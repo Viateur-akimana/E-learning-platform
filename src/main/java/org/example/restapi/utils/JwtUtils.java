@@ -24,7 +24,7 @@ public class JwtUtils {
         return usernameFromToken.equals(username) && !isTokenExpired(token);
     }
 
-    private String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
     }
 
